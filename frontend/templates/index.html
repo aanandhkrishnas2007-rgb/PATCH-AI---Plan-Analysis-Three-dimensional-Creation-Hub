@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanForge AI - Turn 2D Blueprints into Interactive 3D Spatial Models</title>
+    
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Application Stylesheet -->
+    <link rel="stylesheet" href="/static/css/style.css">
+
+    <!-- Three.js & Exporters from CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/TransformControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/OBJExporter.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+</head>
+<body>
+
+    <!-- Mandatory Professional Accuracy Disclaimer Bar -->
+    <div class="disclaimer-bar">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <span>AI-generated model &mdash; dimensions and structure should be verified by a qualified professional before construction.</span>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-brand" onclick="app.showView('landing')">
+            <div class="brand-icon"><i class="fa-solid fa-cube"></i></div>
+            <span>PlanForge <span style="color:var(--accent-cyan)">AI</span></span>
+        </div>
+
+        <ul class="nav-links">
+            <li><a href="#" onclick="app.showView('landing')">Home</a></li>
+            <li><a href="#features" onclick="app.showView('landing')">Features</a></li>
+            <li><a href="#how-it-works" onclick="app.showView('landing')">How It Works</a></li>
+            <li id="nav-dashboard-link" style="display:none;"><a href="#" onclick="app.showView('dashboard')">My Projects</a></li>
+        </ul>
+
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <button class="btn btn-outline btn-sm" onclick="app.runDemo('apartment')">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Try Demo
+            </button>
+            <button id="auth-btn" class="btn btn-primary btn-sm" onclick="auth.openModal()">
+                <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </button>
+        </div>
+    </header>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ==================== 1. LANDING PAGE VIEW ==================== -->
+    <div id="landing-view" class="view-container active">
+        <section class="hero">
+            <div class="hero-badge">
+                <i class="fa-solid fa-layer-group"></i> Spatial Intelligence & Architectural AI Platform
+            </div>
+            <h1>Turn 2D Blueprints into Interactive 3D Models</h1>
+            <p>Upload any floor plan image or CAD drawing. Our AI computer vision engine automatically detects walls, doors, windows, and rooms &mdash; generating a customizable 3D house model in seconds.</p>
+
+            <div class="hero-actions">
+                <button class="btn btn-primary" style="padding:14px 28px; font-size:1.05rem;" onclick="app.showView('upload')">
+                    <i class="fa-solid fa-upload"></i> Upload Blueprint
+                </button>
+                <button class="btn btn-secondary" style="padding:14px 28px; font-size:1.05rem;" onclick="app.runDemo('apartment')">
+                    <i class="fa-solid fa-play"></i> Try Instant Demo
+                </button>
+            </div>
+        </section>
+
+        <!-- Features Grid -->
+        <section id="features" class="features-section">
+            <h2 class="section-title">Engineered for Architects, Builders & Creators</h2>
+            <div class="grid-3">
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-eye"></i></div>
+                    <h3>AI Structural Recognition</h3>
+                    <p>OpenCV edge transforms and contour algorithms segment exterior walls, partition interior walls, detect door arcs, and calculate room areas.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-cube"></i></div>
+                    <h3>Procedural 3D Mesh Generation</h3>
+                    <p>Instantly extrudes 2D structural graphs into 3D walls, door frames, glass windows, customizable floor materials, and ceiling slabs in WebGL.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-sliders"></i></div>
+                    <h3>Advanced 3D House Editor</h3>
+                    <p>Select, translate, and resize walls, doors, windows, and furniture directly in 3D with transform gizmos, properties binding, and undo history.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+                    <h3>Scale & Measurement Tool</h3>
+                    <p>Automatic room scale detection with manual measurement override. Measure exact 3D distance between any two points in feet.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-couch"></i></div>
+                    <h3>3D Furniture Library</h3>
+                    <p>Drag and place 3D furniture models into rooms (Beds, Sofas, Dining Tables, Chairs, Counters, Toilets, Wardrobes) with real-time editing.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fa-solid fa-file-export"></i></div>
+                    <h3>Multi-Format Export</h3>
+                    <p>Export your finished 3D house model to industry standards: GLTF/GLB, OBJ, STL, Structural JSON, or high-res rendered screenshots.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section id="how-it-works" class="features-section" style="background: rgba(15, 23, 42, 0.4); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+            <h2 class="section-title">How PlanForge AI Works</h2>
+            <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:30px; max-width:1100px; margin:0 auto; text-align:center;">
+                <div style="flex:1; min-width:200px;">
+                    <div style="font-size:2.5rem; color:var(--accent-cyan); font-weight:800;">01</div>
+                    <h4 style="margin:12px 0 6px;">Upload Blueprint</h4>
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">Upload PNG, JPG, JPEG, or PDF floor plan drawings.</p>
+                </div>
+                <div style="flex:1; min-width:200px;">
+                    <div style="font-size:2.5rem; color:var(--accent-cyan); font-weight:800;">02</div>
+                    <h4 style="margin:12px 0 6px;">AI Detection</h4>
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">Algorithms extract walls, room boundaries, doors & windows.</p>
+                </div>
+                <div style="flex:1; min-width:200px;">
+                    <div style="font-size:2.5rem; color:var(--accent-cyan); font-weight:800;">03</div>
+                    <h4 style="margin:12px 0 6px;">2D / 3D Generation</h4>
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">Review 2D vector layout and procedural 3D house model.</p>
+                </div>
+                <div style="flex:1; min-width:200px;">
+                    <div style="font-size:2.5rem; color:var(--accent-cyan); font-weight:800;">04</div>
+                    <h4 style="margin:12px 0 6px;">Edit & Export</h4>
+                    <p style="color:var(--text-secondary); font-size:0.9rem;">Modify walls, place furniture, measure, and export GLTF/OBJ.</p>
+                </div>
+            </div>
+        </section>
+
+        <footer style="text-align:center; padding:30px; color:var(--text-secondary); font-size:0.85rem; border-top:1px solid var(--border-color);">
+            PlanForge AI &copy; 2026 &bull; Advanced AI Architectural Prototyping Platform
+        </footer>
+    </div>
+
+    <!-- ==================== 2. DASHBOARD VIEW ==================== -->
+    <div id="dashboard-view" class="view-container" style="padding:40px 20px; max-width:1200px; margin:0 auto;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+            <div>
+                <h2 style="font-size:1.8rem; font-weight:800;">My Projects</h2>
+                <p style="color:var(--text-secondary);">Manage and edit your saved 3D house models.</p>
+            </div>
+            <button class="btn btn-primary" onclick="app.showView('upload')">
+                <i class="fa-solid fa-plus"></i> New Project
+            </button>
+        </div>
+
+        <div id="projects-grid" class="grid-3">
+            <!-- Project Cards loaded dynamically -->
+        </div>
+    </div>
+
+    <!-- ==================== 3. UPLOAD BLUEPRINT VIEW ==================== -->
+    <div id="upload-view" class="view-container" style="padding:40px 20px; max-width:800px; margin:0 auto;">
+        <div style="text-align:center; margin-bottom:30px;">
+            <h2 style="font-size:2rem; font-weight:800;">Upload Floor Plan Blueprint</h2>
+            <p style="color:var(--text-secondary);">Supports PNG, JPG, JPEG, and PDF blueprint files (max 20MB).</p>
+        </div>
+
+        <div id="drop-zone" class="upload-box" onclick="document.getElementById('file-input').click()">
+            <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+            <h3 style="font-size:1.2rem; margin-bottom:8px;">Drag & Drop your blueprint here</h3>
+            <p style="color:var(--text-secondary); font-size:0.9rem;">or click to browse files on your computer</p>
+            <input type="file" id="file-input" accept=".png,.jpg,.jpeg,.pdf" style="display:none;" onchange="upload.handleFileSelect(event)">
+        </div>
+
+        <div id="preview-wrapper" class="preview-container">
+            <h4 style="margin-bottom:12px;">Blueprint Preview</h4>
+            <img id="upload-preview-img" class="preview-img" src="" alt="Blueprint Preview">
+            
+            <div style="margin-top:20px; background:var(--bg-card); padding:16px; border-radius:10px; border:1px solid var(--border-color); text-align:left;">
+                <label style="font-size:0.85rem; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">
+                    Optional: Known Scale Measurement (Feet per pixel auto-calibration)
+                </label>
+                <div style="display:flex; gap:12px;">
+                    <input type="number" id="custom-scale-input" placeholder="e.g. 20 (pixels per foot)" style="flex:1; padding:10px; border-radius:6px; background:#1e293b; border:1px solid var(--border-color); color:#fff;">
+                    <button class="btn btn-primary" onclick="upload.startAnalysis()">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Blueprint
+                    </button>
+                    <button class="btn btn-secondary" onclick="upload.reset()">Remove File</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 4. AI ANALYSIS VIEW ==================== -->
+    <div id="analysis-view" class="view-container" style="padding:40px 20px; max-width:1000px; margin:0 auto;">
+        <div style="text-align:center; margin-bottom:24px;">
+            <h2 style="font-size:2rem; font-weight:800;">AI Blueprint Analysis</h2>
+            <p style="color:var(--text-secondary);">Computer Vision algorithms detecting structural elements...</p>
+        </div>
+
+        <!-- Progress Bar -->
+        <div id="analysis-progress-bar" style="width:100%; height:8px; background:#1e293b; border-radius:4px; overflow:hidden; margin-bottom:24px;">
+            <div id="progress-fill" style="width:0%; height:100%; background:linear-gradient(90deg, var(--accent-cyan), var(--accent-blue)); transition:width 0.4s ease;"></div>
+        </div>
+
+        <!-- Metric Summary Cards -->
+        <div class="metrics-row">
+            <div class="metric-card">
+                <div id="metric-walls" class="metric-value">0</div>
+                <div class="metric-label">Walls</div>
+            </div>
+            <div class="metric-card">
+                <div id="metric-rooms" class="metric-value">0</div>
+                <div class="metric-label">Rooms</div>
+            </div>
+            <div class="metric-card">
+                <div id="metric-doors" class="metric-value">0</div>
+                <div class="metric-label">Doors</div>
+            </div>
+            <div class="metric-card">
+                <div id="metric-windows" class="metric-value">0</div>
+                <div class="metric-label">Windows</div>
+            </div>
+        </div>
+
+        <!-- Processed Blueprint Overlay -->
+        <div style="background:var(--bg-card); padding:20px; border-radius:14px; border:1px solid var(--border-color); text-align:center; margin-bottom:24px;">
+            <h4 style="margin-bottom:14px; color:var(--accent-cyan);">Detected Structural Overlay</h4>
+            <img id="processed-overlay-img" class="preview-img" src="" alt="Detected Structural Overlay">
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:16px;">
+            <button class="btn btn-primary" style="padding:12px 28px; font-size:1rem;" onclick="app.openStudio()">
+                <i class="fa-solid fa-cube"></i> Launch Interactive 3D Studio
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 5. STUDIO 2D & 3D INTERACTIVE EDITOR ==================== -->
+    <div id="editor-view" class="view-container">
+        <div class="studio-container">
+            
+            <!-- Header Toolbar -->
+            <div class="studio-header">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <span id="studio-project-title" style="font-weight:700; font-size:1.1rem; color:#fff;">Project Studio</span>
+                    <span id="studio-scale-badge" class="hero-badge" style="margin:0; padding:2px 10px; font-size:0.75rem;">Scale: 1 ft = 20 px</span>
+                </div>
+
+                <!-- Mode Switcher -->
+                <div style="display:flex; background:#1e293b; padding:3px; border-radius:8px; border:1px solid var(--border-color);">
+                    <button id="mode-2d-btn" class="btn btn-sm btn-secondary" onclick="editor.setMode('2d')">
+                        <i class="fa-solid fa-map"></i> 2D Plan
+                    </button>
+                    <button id="mode-3d-btn" class="btn btn-sm btn-primary" onclick="editor.setMode('3d')">
+                        <i class="fa-solid fa-cube"></i> 3D Orbit
+                    </button>
+                    <button id="mode-walk-btn" class="btn btn-sm btn-secondary" onclick="editor.setMode('walkthrough')">
+                        <i class="fa-solid fa-person-walking"></i> Walkthrough
+                    </button>
+                </div>
+
+                <!-- Action Controls -->
+                <div style="display:flex; gap:8px;">
+                    <button class="btn btn-secondary btn-sm" onclick="editor.undo()" title="Undo">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="editor.redo()" title="Redo">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="editor.toggleBeforeAfter()" title="Original vs Edited Comparison">
+                        <i class="fa-solid fa-sliders"></i> Before/After
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="editor.saveProject()">
+                        <i class="fa-solid fa-floppy-disk"></i> Save Project
+                    </button>
+                    <button class="btn btn-outline btn-sm" onclick="exporter.openMenu()">
+                        <i class="fa-solid fa-download"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <!-- Left Tool Sidebar -->
+            <div class="studio-sidebar">
+                <div class="tool-group-title">Editing Tools</div>
+                <button id="tool-select" class="tool-btn active" onclick="editor.setActiveTool('select')">
+                    <i class="fa-solid fa-arrow-pointer"></i> Select / Move
+                </button>
+                <button id="tool-wall" class="tool-btn" onclick="editor.setActiveTool('wall')">
+                    <i class="fa-solid fa-grip-lines"></i> Add Wall
+                </button>
+                <button id="tool-door" class="tool-btn" onclick="editor.setActiveTool('door')">
+                    <i class="fa-solid fa-door-open"></i> Add Door
+                </button>
+                <button id="tool-window" class="tool-btn" onclick="editor.setActiveTool('window')">
+                    <i class="fa-solid fa-border-all"></i> Add Window
+                </button>
+                <button id="tool-measure" class="tool-btn" onclick="editor.setActiveTool('measure')">
+                    <i class="fa-solid fa-ruler"></i> 3D Measure
+                </button>
+
+                <div class="tool-group-title" style="margin-top:12px;">3D Camera Views</div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px;">
+                    <button class="btn btn-secondary btn-sm" onclick="viewer3d.setPresetView('top')">Top</button>
+                    <button class="btn btn-secondary btn-sm" onclick="viewer3d.setPresetView('front')">Front</button>
+                    <button class="btn btn-secondary btn-sm" onclick="viewer3d.setPresetView('side')">Side</button>
+                    <button class="btn btn-secondary btn-sm" onclick="viewer3d.setPresetView('iso')">3D Iso</button>
+                </div>
+
+                <div class="tool-group-title" style="margin-top:12px;">Furniture Library</div>
+                <button class="tool-btn" onclick="editor.spawnFurniture('bed')"><i class="fa-solid fa-bed"></i> Bed</button>
+                <button class="tool-btn" onclick="editor.spawnFurniture('sofa')"><i class="fa-solid fa-couch"></i> Sofa</button>
+                <button class="tool-btn" onclick="editor.spawnFurniture('table')"><i class="fa-solid fa-table"></i> Dining Table</button>
+                <button class="tool-btn" onclick="editor.spawnFurniture('chair')"><i class="fa-solid fa-chair"></i> Chair</button>
+                <button class="tool-btn" onclick="editor.spawnFurniture('counter')"><i class="fa-solid fa-kitchen-set"></i> Kitchen Counter</button>
+                <button class="tool-btn" onclick="editor.spawnFurniture('toilet')"><i class="fa-solid fa-toilet"></i> Toilet</button>
+                <button class="tool-btn" onclick="editor.spawnFurniture('wardrobe')"><i class="fa-solid fa-box"></i> Wardrobe</button>
+            </div>
+
+            <!-- Center Viewport (2D Canvas & 3D WebGL Canvas) -->
+            <div class="studio-viewport">
+                <!-- 2D Canvas -->
+                <canvas id="canvas2d" style="display:none;"></canvas>
+                
+                <!-- 3D Three.js Container -->
+                <div id="webgl3d"></div>
+
+                <!-- Walkthrough Instructions Overlay -->
+                <div id="walkthrough-instructions" class="walkthrough-overlay">
+                    <h5 style="color:var(--accent-cyan); margin-bottom:4px;"><i class="fa-solid fa-person-walking"></i> First-Person Walkthrough Mode</h5>
+                    <p>Click inside viewport to lock pointer &bull; <b>WASD</b> to walk &bull; <b>Mouse</b> to look around &bull; <b>ESC</b> to exit</p>
+                </div>
+            </div>
+
+            <!-- Right Property Panel -->
+            <div class="studio-props">
+                <h4 style="margin-bottom:16px; border-bottom:1px solid var(--border-color); padding-bottom:8px;">
+                    <i class="fa-solid fa-sliders"></i> Property Panel
+                </h4>
+                
+                <div id="selected-object-info">
+                    <p style="color:var(--text-secondary); font-size:0.85rem;">Click any Wall, Room, Door, Window, or Furniture piece in 3D/2D to inspect and edit its properties.</p>
+                </div>
+
+                <!-- Dynamic Form Fields -->
+                <div id="props-form" style="margin-top:16px; display:none;">
+                    <div class="prop-field">
+                        <label id="prop-label-1">Name / Identifier</label>
+                        <input type="text" id="prop-input-name">
+                    </div>
+                    <div class="prop-field">
+                        <label id="prop-label-val1">Length / Width (ft)</label>
+                        <input type="number" step="0.1" id="prop-input-val1">
+                    </div>
+                    <div class="prop-field">
+                        <label id="prop-label-val2">Height / Thickness (ft)</label>
+                        <input type="number" step="0.1" id="prop-input-val2">
+                    </div>
+                    <div class="prop-field">
+                        <label>Material / Style</label>
+                        <select id="prop-input-material">
+                            <option value="hardwood">Hardwood Oak</option>
+                            <option value="marble">White Marble</option>
+                            <option value="tile">Ceramic Tile</option>
+                            <option value="carpet">Cozy Carpet</option>
+                            <option value="concrete">Polished Concrete</option>
+                        </select>
+                    </div>
+
+                    <div style="display:flex; gap:8px; margin-top:20px;">
+                        <button class="btn btn-primary btn-sm" style="flex:1;" onclick="editor.applyPropertyChanges()">Apply</button>
+                        <button class="btn btn-outline btn-sm" style="color:var(--accent-red); border-color:var(--accent-red);" onclick="editor.deleteSelected()">Delete</button>
+                    </div>
+                </div>
+
+                <!-- Global House Settings -->
+                <div style="margin-top:30px; border-top:1px solid var(--border-color); padding-top:16px;">
+                    <h5 style="margin-bottom:12px; color:var(--text-secondary); font-size:0.8rem; text-transform:uppercase;">House Parameters</h5>
+                    <div class="prop-field">
+                        <label>Wall Height (ft)</label>
+                        <input type="number" id="global-wall-height" value="10.0" step="0.5" onchange="editor.updateGlobalParams()">
+                    </div>
+                    <div class="prop-field">
+                        <label>Wall Thickness (inches)</label>
+                        <input type="number" id="global-wall-thickness" value="6.0" step="0.5" onchange="editor.updateGlobalParams()">
+                    </div>
+                    <div class="prop-field">
+                        <label><input type="checkbox" id="toggle-ceiling" checked onchange="viewer3d.toggleCeiling(this.checked)"> Show Ceiling Slab</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Status Bar -->
+            <div class="studio-footer">
+                <span id="status-left"><i class="fa-solid fa-circle" style="color:var(--accent-green); font-size:0.6rem;"></i> 3D Studio Ready</span>
+                <span id="status-measure" style="color:var(--accent-cyan); font-weight:600;"></span>
+                <span id="status-right">PlanForge AI v1.0 &bull; WebGL Active</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== AUTH MODAL ==================== -->
+    <div id="auth-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 id="auth-modal-title" style="font-size:1.3rem;">Sign In to PlanForge AI</h3>
+                <button style="background:none; border:none; color:var(--text-secondary); font-size:1.2rem; cursor:pointer;" onclick="auth.closeModal()">&times;</button>
+            </div>
+
+            <form id="auth-form" onsubmit="auth.handleSubmit(event)">
+                <div id="auth-name-field" class="prop-field" style="display:none;">
+                    <label>Full Name</label>
+                    <input type="text" id="auth-name-input" placeholder="Architect John">
+                </div>
+                <div class="prop-field">
+                    <label>Email Address</label>
+                    <input type="email" id="auth-email-input" required placeholder="user@example.com">
+                </div>
+                <div class="prop-field">
+                    <label>Password</label>
+                    <input type="password" id="auth-password-input" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width:100%; margin-top:12px; justify-content:center;">
+                    Sign In
+                </button>
+            </form>
+
+            <div style="margin-top:20px; text-align:center; font-size:0.88rem; color:var(--text-secondary);">
+                <span id="auth-toggle-text">Don't have an account?</span>
+                <a href="#" id="auth-toggle-link" style="color:var(--accent-cyan); font-weight:600; text-decoration:none; margin-left:4px;" onclick="auth.toggleMode(event)">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Bundles -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/auth.js"></script>
+    <script src="/static/js/dashboard.js"></script>
+    <script src="/static/js/upload.js"></script>
+    <script src="/static/js/analysis.js"></script>
+    <script src="/static/js/canvas2d.js"></script>
+    <script src="/static/js/viewer3d.js"></script>
+    <script src="/static/js/editor3d.js"></script>
+    <script src="/static/js/exporter.js"></script>
+
+</body>
+</html>

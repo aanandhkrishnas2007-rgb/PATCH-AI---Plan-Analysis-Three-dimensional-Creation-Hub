@@ -1,4 +1,4 @@
-# PlanForge AI 🏠🤖
+# PATCH ai 🏠🤖
 
 > **Spatial Intelligence & Architectural AI Platform &mdash; Turn 2D Blueprints into Interactive 3D Spatial Models**
 
@@ -46,7 +46,7 @@ PlanForge AI is an advanced AI-powered web application and college project proto
 ## 📁 Project Structure
 
 ```text
-PlanForge-AI/
+PATCH ai/
 │
 ├── backend/
 │   ├── app.py                   # Flask Application Factory & Route Registration
@@ -139,4 +139,4 @@ http://127.0.0.1:5000
 
 > **"AI-generated model — dimensions and structure should be verified by a qualified professional before construction."**
 > 
-> PlanForge AI is designed as a visualization, design exploration, and educational college prototype. It should not replace official architectural engineering blueprints or structural safety inspections.
+> PATCH ai AI is designed as a visualization, design exploration, and educational college prototype. It should not replace official architectural engineering blueprints or structural safety inspections.
